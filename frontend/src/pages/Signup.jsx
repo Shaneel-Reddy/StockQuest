@@ -53,7 +53,8 @@ export default function Signup() {
     }
 
     setError("");
-    const userData = {
+
+    const formData = {
       username: userNameRef.current.value,
       firstname: firstNameRef.current.value,
       lastname: lastNameRef.current.value,
@@ -64,27 +65,15 @@ export default function Signup() {
     };
 
     try {
-      const response = await axios.post("http://localhost:7000/save", userData);
-
-      if (response.status === 200) {
-        console.log("User registered successfully");
-        userNameRef.current.value = "";
-        firstNameRef.current.value = "";
-        lastNameRef.current.value = "";
-        emailRef.current.value = "";
-        addressRef.current.value = "";
-        phoneNumberRef.current.value = "";
-        passwordRef.current.value = "";
-
-        navigate("/login");
-      } else {
-        setError("Failed to register.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
+      const response = await axios.post(
+        "http://localhost:7000/auth/signup",
+        formData
+      );
+      localStorage.setItem("jwt", response.data.jwt);
+      navigate("/");
+    } catch (err) {
       setError(
-        error.response?.data?.message ||
-          "An error occurred. Please try again later."
+        err.response ? err.response.data.message : "Signup failed. Try again."
       );
     }
   };

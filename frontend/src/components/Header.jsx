@@ -1,6 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 export default function Header() {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("jwt");
+    navigate("/");
+  };
   return (
     <header className="headings p-3 text-white">
       <div className="container">
@@ -57,9 +62,9 @@ export default function Header() {
               aria-labelledby="dropdownUser1"
             >
               <li>
-                <Link className="dropdown-item" to="/">
+                <button className="dropdown-item" onClick={handleLogout}>
                   Sign out
-                </Link>
+                </button>
               </li>
             </ul>
           </div>

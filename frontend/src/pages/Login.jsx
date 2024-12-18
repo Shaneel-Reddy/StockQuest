@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../css/LoginSignup.css";
 import axios from "axios";
+
 export default function Login() {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -42,31 +43,23 @@ export default function Login() {
 
     setError("");
 
-    const userData = {
-      email: emailRef.current.value,
-      password: passwordRef.current.value,
+    const formData = {
+      email: email,
+      password: password,
     };
 
     try {
       const response = await axios.post(
-        "http://localhost:7000/login",
-        userData
+        "http://localhost:7000/auth/signin",
+        formData
       );
-
-      if (response.status === 200) {
-        console.log("User Login successfull");
-        emailRef.current.value = "";
-        passwordRef.current.value = "";
-
-        navigate("/dashboard");
-      } else {
-        setError("Failed to register.");
-      }
+      console.log(response.data);
+      localStorage.setItem("jwt", response.data.jwt);
+      navigate("/dashboard");
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error during login:", error);
       setError(
-        error.response?.data?.message ||
-          "An error occurred. Please try again later."
+        error.response?.data?.message || "An error occurred. Please try again."
       );
     }
   };
